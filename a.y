@@ -1,6 +1,13 @@
 %{
 #include "a.h"
 %}
+/*
+ * Bison fundamentally works by asking flex to get the next token, which it
+ * returns as an object of type "yystype".  But tokens could be of any
+ * arbitrary data type!  So we deal with that in Bison by defining a C union
+ * holding each of the types of tokens that Flex could return, and have Bison
+ * use that union instead of "int" for the definition of "yystype".
+ */
 %union
 {
 	Sym	*sym;
@@ -9,12 +16,40 @@
 	char	sval[8];
 	Gen	gen;
 }
+
+/*
+ * 5.3.2 Specifying Operator Precedence
+ * 
+ * Bison allows you to specify these choices with the operator precedence declarations
+ * %left and %right. Each such declaration contains a list of tokens, which are 
+ * operators whose precedence and associativity is being declared. The %left 
+ * declaration makes all those operators left-associative and the %right declaration
+ * makes them right-associative. A third alternative is %nonassoc, which declares
+ * that it is a syntax error to find the same operator twice “in a row”. The last
+ * alternative, %precedence, allows to define only precedence and no associativity
+ * at all. As a result, any associativity-related conflict that remains will be
+ * reported as an compile-time error. The directive %nonassoc creates run-time
+ * error: using the operator in a associative way is a syntax error. The directive
+ * %precedence creates compile-time errors: an operator can be involved in an
+ * associativity-related conflict, contrary to what expected the grammar author.
+ * 
+ * The relative precedence of different operators is controlled by the order in
+ * which they are declared. The first precedence/associativity declaration in
+ * the file declares the operators whose precedence is lowest, the next such
+ * declaration declares the operators whose precedence is a little higher,
+ * and so on.
+ */
 %left	'|'
 %left	'^'
 %left	'&'
 %left	'<' '>'
 %left	'+' '-'
 %left	'*' '/' '%'
+
+/*
+ * Directive %token declares a terminal symbol (token type name) with no precedence
+ * or associativity specified.
+ */
 %token	<lval>	LTYPE1 LTYPE2 LTYPE3 LTYPE4 LTYPE5
 %token	<lval>	LTYPE6 LTYPE7 LTYPE8 LTYPE9 LTYPEA
 %token	<lval>	LTYPEB LTYPEC LTYPED LTYPEE LTYPEF
@@ -26,6 +61,10 @@
 %token	<dval>	LFCONST
 %token	<sval>	LSCONST
 %token	<sym>	LNAME LLAB LVAR
+
+/*
+ * Directive %type declares the type of semantic values for a nonterminal symbol.
+ */
 %type	<lval>	con expr oexpr pointer offset sreg spreg creg
 %type	<lval>	rcon cond reglist
 %type	<gen>	gen rel reg regreg freg shift fcon frcon
