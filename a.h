@@ -80,7 +80,6 @@ enum
 
 	Always	= 14,
 };
-#define	nelem(x)	(sizeof(x)/sizeof((x)[0]))
 
 EXTERN	char	debug[256];
 EXTERN	Sym*	hash[NHASH];

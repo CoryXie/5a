@@ -10,6 +10,7 @@
 #include "arg.h"
 #include "bio.h"
 #include "rune.h"
+#include "utils.h"
 #include "y.tab.h"
 
 char	debug[256];

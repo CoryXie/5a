@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "utils.h"
  
 #ifdef UINT32_C
 #define RUNE_C(x) UINT32_C(x)
@@ -17,15 +18,15 @@ typedef uint_least32_t Rune;
 typedef unsigned long Rune;
 #endif
 
-#define UTFmax 6 /* maximum bytes per rune */
-
-#define Runeerror 0xFFFD          /* the "error" Rune or "Unicode replacement character" */
-#define Runeself 0x80             /* rune and UTF sequences are the same (<) - characters below Runeself are represented as themselves in a single byte. */
-#define Runesync 0x80             /* cannot represent part of a UTF sequence (<) */
-#define Runemax  RUNE_C(0x10FFFF) /* maximum rune value - 21-bit rune */
-
-
-typedef unsigned char uchar;
+enum
+{
+	UTFmax		= 4,		/* maximum bytes per rune */
+	Runesync	= 0x80,		/* cannot represent part of a UTF sequence (<) */
+	Runeself	= 0x80,		/* rune and UTF sequences are the same (<) */
+	Runeerror	= 0xFFFD,	/* decoding error in UTF */
+	Runemax		= 0x10FFFF,	/* 21-bit rune */
+	Runemask	= 0x1FFFFF,	/* bits used by runes (see grep) */
+};
  
 #ifdef __cplusplus
 extern "C" {
